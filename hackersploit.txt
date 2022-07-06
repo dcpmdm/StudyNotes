@@ -1,0 +1,93 @@
+NETSTAT
+==========
+netstat -ie (interfaces)
+netstat -r (routing table)
+netstat -c (continuous output of connections)
+netstat -a (all active connections)
+netstat -at (active tcp connections)
+netstat -au (active udp connections)
+netstat -lu (listening udp ports)
+netstat -lt (listening tcp ports)
+netstat -p (listening tcp port' processes)
+netstat -atp
+netstat -tnl
+netstat -unl
+netstat -nlp | grep :22
+netstat -an | grep :22
+----britec--
+netstat -b (all connections by exes)
+netstat -ano
+spywareguide.com - check files with established connections in netstat
+foundstone.com (fport netstat alternative)
+pskill.exe from microsoft.com
+
+
+
+-------
+TCPDUMP
+=====
+tcpdump -i eth0 -v dst 111 src 222
+tcpdump -i eth0 -v net 192.168.1.0/24
+tcpdump -i eth0 -v tcp and net 192.168.10.0/24
+tcpdump -i eth0 -v port 80 
+tcpdump -i eth0 -v src port 443 and dst 192.168.1.107
+tcpdump -i eth0 -v 'src port 443 and dst 192.168.1.107'
+tcpdump -w /root/Desktop/traffic.pcap -i eth0 -v 'tcp and net 192.168.1.0/24'
+-----------
+SNORT
+======
+snort rules--
+1. community rules
+2. registered rules by TALOS need registration
+3. subscription only rules require active paid subscription to snort (circa $39/month)
+----
+installation
+sudo apt update && apt install snort -y
+ip a s (check interface)
+enable promiscuos mode on network interface in VM environment)
+sudo ip link set enp0s3 promisc on (enable promiscuous mode on bare metal system)
+ls -al /etc/snort
+(copy and protect snort.conf)
+vim /etc/snort.conf
+   --set network variables
+  ....ipvar HOME_NET 192.168../24
+  ....ipvar EXTERNAL_NET any
+  ....portvar HTTP_PORTS [80,81,311....]
+  ....var RULE_PATH /etc/snort/rules
+--
+vim /root/.vimrc
+set number
+syntax on
+----insert # at beginning of lines from 578 to 696
+:578,696s/^/# (insert #)
+:578,696s/^// (remove/blankout)
+
+----
+Snorpy (gui for snort)
+sudo vim /etc/snort/rules/local.rules
+alert icmp from_any_ips from_any_ports ->$HOME_NET_ips any_port(msg:"ICMP ping detected"; sid:10001; rev:1;)
+alert tcp any any -> $HOME_NET 22 (msg:"ssh authentication; sid:10002; rev:2;)
+--
+man snort
+(options)
+sudo snort -q -l /var/log/snort -i enp0s3 -A console -c /etc/snort/snort.conf
+[perform a ping frm cmd to test ruke 1]
+-ping 192.168...
+[perform ssh authentication to test rule 2
+-ssh msfadmin@192.168...]
+---
+snort.org - download community rules
+--
+to log alerts for viewing in wireshark or splunk -change alert mode (-A) to fast
+sudo snort -q -l /var/log/snort -i enp0s3 -A fast -c /etc/snort/snort.conf
+---
+SPLUNK
+======
+platform for analysing data and logs produced by various systems
+ allows you to monitor, search and analyse machine generated data and logs through a web interface
+In order to use splunk - need to import data or logs or 
+utilise the splunk universal forwarder to forward logs and data to splunk. 
+Splunk collates all data from various systems and provides a central index to be used for searching.
+Splunk provides robust visualisation and reporting tools that allows ypu to identify data of interest, 
+transform data into results reports in chart or graph form
+Linode - cloud provider for hosting mainly linux platforms
